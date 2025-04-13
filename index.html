@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarvis Portfolio</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      overflow: hidden;
+      font-family: 'Orbitron', sans-serif;
+    }
+    #hud {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00ffff;
+      text-align: center;
+      text-shadow: 0 0 10px #0ff;
+      font-size: 1.5rem;
+      z-index: 10;
+    }
+    #muteBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,255,255,0.1);
+      border: 1px solid #0ff;
+      color: #0ff;
+      padding: 10px;
+      border-radius: 8px;
+      backdrop-filter: blur(5px);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      z-index: 10;
+    }
+    @keyframes flicker {
+    0% { opacity: 0.9; filter: drop-shadow(0 0 2px #0ff); }
+    25% { opacity: 1; filter: drop-shadow(0 0 6px #0ff); }
+    50% { opacity: 0.85; filter: drop-shadow(0 0 3px #0ff); }
+    75% { opacity: 1; filter: drop-shadow(0 0 5px #0ff); }
+    100% { opacity: 0.9; filter: drop-shadow(0 0 4px #0ff); }
+  }
+.holo-glow {
+      position: relative;
+    }
+    .holo-glow::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 255, 255, 0.07),
+        rgba(0, 255, 255, 0.07) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      pointer-events: none;
+      animation: scan 4s linear infinite;
+      z-index: 1;
+    }
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+#experienceModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-width: 500px;
+      height: auto;
+      padding: 30px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 12px;
+      display: none;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px #00ffff;
+      box-shadow: 0 0 30px #00ffff40;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #experienceTab {
+  position: absolute;
+  top: 150px;
+  left: 20px;
+  padding: 14px 28px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid #0ff;
+  border-radius: 10px;
+  color: #0ff;
+  font-size: 1.1rem;
+  font-family: Orbitron, sans-serif;
+  cursor: pointer;
+  z-index: 11;
+  text-shadow: 0 0 5px #0ff;
+}
+    #typingExp {
+      white-space: pre-wrap;
+    }
+#educationModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-width: 500px;
+      height: auto;
+      padding: 30px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 12px;
+      display: none;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px #00ffff;
+      box-shadow: 0 0 30px #00ffff40;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #educationTab {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  padding: 14px 28px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid #0ff;
+  border-radius: 10px;
+  color: #0ff;
+  font-size: 1.1rem;
+  font-family: Orbitron, sans-serif;
+  cursor: pointer;
+  z-index: 11;
+  text-shadow: 0 0 5px #0ff;
+}
+    #typingEdu {
+      white-space: pre-wrap;
+    }
+#contactModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-width: 500px;
+      height: auto;
+      padding: 30px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 12px;
+      display: none;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px #00ffff;
+      box-shadow: 0 0 30px #00ffff40;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #contactTab {
+  position: absolute;
+  top: 150px;
+  right: 20px;
+  padding: 14px 28px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid #0ff;
+  border-radius: 10px;
+  color: #0ff;
+  font-size: 1.1rem;
+  font-family: Orbitron, sans-serif;
+  cursor: pointer;
+  z-index: 11;
+  text-shadow: 0 0 5px #0ff;
+}
+    #typingContact {
+      white-space: pre-wrap;
+    }
+</style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/"
+      }
+    }
+  </script>
+<style>
+    #skillsModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-width: 500px;
+      height: auto;
+      padding: 30px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 12px;
+      display: none;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px #00ffff;
+      box-shadow: 0 0 30px #00ffff40;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #typing {
+      white-space: pre-wrap;
+    }
+    #skillsTab {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  padding: 14px 28px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid #0ff;
+  border-radius: 10px;
+  color: #0ff;
+  font-size: 1.1rem;
+  font-family: Orbitron, sans-serif;
+  cursor: pointer;
+  z-index: 11;
+  text-shadow: 0 0 5px #0ff;
+}
+  </style>
+</head>
+<body>
+  <div id="skillsTab">💡 Skills</div>
+  <div id="experienceTab">📘 Experience</div>
+  <div id="educationTab">🎓 Education</div>
+  <div id="contactTab">📞 Contact</div>
+  <div id="experienceModal" class="holo-glow">
+    <button id="closeExp" style="position:absolute;top:45%px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button>
+    <div id="typingExp"></div>
+  </div>
+  <div id="skillsModal" class="holo-glow"><button id="closeModal" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button><div id="typing"></div></div>
+  <div id="educationModal" class="holo-glow">
+    <button id="closeEdu" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button>
+    <div id="typingEdu"></div>
+  </div></div>
+  <div id="contactModal" class="holo-glow">
+    <button id="closeContact" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button>
+    <div id="typingContact"></div>
+  </div>
+  <div id="hud" class="holo-glow" style="top: 50%; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; animation: flicker 1.5s infinite alternate;">
+    <div style="padding: 20px; background: rgba(0,255,255,0.05); border: 1px solid #0ff; border-radius: 10px; box-shadow: 0 0 20px #0ff; text-shadow: 0 0 10px #0ff;">
+      Mohammed Favaz V P<br/>Admin | Full-Stack Developer
+    </div>
+  </div>
+  <button id="muteBtn">🔊 Mute</button>
+  <audio id="ambientSound" autoplay loop>
+    <source src="https://cdn.freesound.org/previews/368/368843_4939433-lq.mp3" type="audio/mpeg">
+  </audio>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    scene.fog = new THREE.Fog(0x000000, 5, 15);
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const light = new THREE.PointLight(0x00ffff, 2, 100);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x00ffff, 0.4));
+
+    const ringGeo = new THREE.RingGeometry(1.5, 1.6, 64);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = -2;
+    scene.add(ring);
+
+    const ringGlowMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, opacity: 0.3, transparent: true });
+    const innerGlow = new THREE.Mesh(new THREE.RingGeometry(1.3, 1.8, 64), ringGlowMat);
+    innerGlow.rotation.x = Math.PI / 2;
+    innerGlow.position.y = -2;
+    scene.add(innerGlow);
+
+    const pointsGeo = new THREE.BufferGeometry();
+    const count = 500;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 20;
+    }
+    pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const pointsMat = new THREE.PointsMaterial({ color: 0x00ffff, size: 0.05 });
+    const points = new THREE.Points(pointsGeo, pointsMat);
+    scene.add(points);
+
+    const orbiters = [];
+    const skillLabels = ['JS', 'Python', 'Django', 'React', 'Tailwind'];
+    for (let i = 0; i < 5; i++) {
+      const textCanvas = document.createElement('canvas');
+      textCanvas.width = 128;
+      textCanvas.height = 64;
+      const ctx = textCanvas.getContext('2d');
+      ctx.fillStyle = '#00ffff';
+      ctx.font = '18px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = '#00ffff';
+      ctx.shadowBlur = 6;
+      ctx.fillText(skillLabels[i], 64, 32);
+
+      const textTexture = new THREE.CanvasTexture(textCanvas);
+      const planeGeo = new THREE.PlaneGeometry(1, 0.4);
+      const planeMat = new THREE.MeshBasicMaterial({ map: textTexture, transparent: true });
+      const orb = new THREE.Mesh(planeGeo, planeMat);
+      orb.userData = {
+        radius: 2.2,
+        angle: i * (Math.PI * 2 / 5),
+        speed: 0.01 + i * 0.001
+      };
+      orbiters.push(orb);
+    }
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      orbiters.forEach((orb) => {
+        orb.userData.angle += orb.userData.speed;
+        orb.position.x = Math.cos(orb.userData.angle) * orb.userData.radius;
+        orb.position.z = Math.sin(orb.userData.angle) * orb.userData.radius;
+      });
+      points.rotation.y += 0.0015;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const musicToggle = document.getElementById('muteBtn');
+    const ambient = document.getElementById('ambientSound');
+    let isMuted = false;
+    musicToggle.addEventListener('click', () => {
+      isMuted = !isMuted;
+      ambient.muted = isMuted;
+      musicToggle.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
+  });
+
+  // Skills tab logic
+  const skillsTab = document.getElementById('skillsTab');
+  const skillsModal = document.getElementById('skillsModal');
+  const typingTarget = document.getElementById('typing');
+  let typingText = `Skills:
+- JavaScript
+- Python
+- Django
+- React
+- Tailwind CSS
+- Three.js
+- Firebase
+- Git & GitHub`;
+  let idx = 0;
+  let typingInterval;
+
+  function typeSkillText() {
+    if (idx < typingText.length) {
+      typingTarget.textContent += typingText[idx++];
+    } else {
+      clearInterval(typingInterval);
+    }
+  }
+
+  skillsTab.addEventListener('click', () => {
+    skillsModal.style.display = 'flex';
+    typingTarget.textContent = '';
+    idx = 0;
+    typingInterval = setInterval(typeSkillText, 50);
+  });
+
+  document.getElementById('closeModal').addEventListener('click', () => {
+    skillsModal.style.display = 'none';
+    clearInterval(typingInterval);
+  });
+
+  const experienceTab = document.getElementById('experienceTab');
+  const experienceModal = document.getElementById('experienceModal');
+  const typingExp = document.getElementById('typingExp');
+  let experienceText = `Experience:
+- Admin & Operations: 6+ yrs
+- Freelance Web Dev
+- HRM Software Developer
+- ERPNext Integration
+- E-commerce Automation`;
+  let expIndex = 0;
+  let expInterval;
+
+  function typeExperienceText() {
+    if (expIndex < experienceText.length) {
+      typingExp.textContent += experienceText[expIndex++];
+    } else {
+      clearInterval(expInterval);
+    }
+  }
+
+  experienceTab.addEventListener('click', () => {
+    experienceModal.style.display = 'flex';
+    typingExp.textContent = '';
+    expIndex = 0;
+    expInterval = setInterval(typeExperienceText, 50);
+  });
+
+  document.getElementById('closeExp').addEventListener('click', () => {
+    experienceModal.style.display = 'none';
+    clearInterval(expInterval);
+  });
+
+  const educationTab = document.getElementById('educationTab');
+  const educationModal = document.getElementById('educationModal');
+  const typingEdu = document.getElementById('typingEdu');
+  let educationText = `Education:
+- BBA 
+- Web Development 
+- Self-learned Django/React
+- ERP & Automation Specialist
+- Hardware & Networking`;
+  let eduIndex = 0;
+  let eduInterval;
+
+  function typeEducationText() {
+    if (eduIndex < educationText.length) {
+      typingEdu.textContent += educationText[eduIndex++];
+    } else {
+      clearInterval(eduInterval);
+    }
+  }
+
+  educationTab.addEventListener('click', () => {
+    educationModal.style.display = 'flex';
+    typingEdu.textContent = '';
+    eduIndex = 0;
+    eduInterval = setInterval(typeEducationText, 50);
+  });
+
+  document.getElementById('closeEdu').addEventListener('click', () => {
+    educationModal.style.display = 'none';
+    clearInterval(eduInterval);
+  });
+
+  const contactTab = document.getElementById('contactTab');
+  const contactModal = document.getElementById('contactModal');
+  const typingContact = document.getElementById('typingContact');
+  let contactText = `Contact:
+- Email: favazmohammed.vp@gmail.com
+- Phone: +974 7168 1612
+- Location: Qatar
+- Portfolio: fvzmhd.pro`;
+  let contactIndex = 0;
+  let contactInterval;
+
+  function typeContactText() {
+    if (contactIndex < contactText.length) {
+      typingContact.textContent += contactText[contactIndex++];
+    } else {
+      clearInterval(contactInterval);
+    }
+  }
+
+  contactTab.addEventListener('click', () => {
+    contactModal.style.display = 'flex';
+    typingContact.textContent = '';
+    contactIndex = 0;
+    contactInterval = setInterval(typeContactText, 50);
+  });
+
+  document.getElementById('closeContact').addEventListener('click', () => {
+    contactModal.style.display = 'none';
+    clearInterval(contactInterval);
+  });
+    
+  </script>
+</body>
+</html>
