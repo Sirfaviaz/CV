@@ -490,6 +490,213 @@
         font-size: 1.2rem;
       }
     }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      /* HUD Adjustments */
+      #hud {
+        transform: translate(-50%, -50%) scale(0.9);
+        font-size: 1.2rem;
+      }
+
+      #hud > div {
+        padding: 20px;
+        margin: 0 10px;
+      }
+
+      /* Modal Tab Adjustments */
+      .modal-tab {
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+
+      #skillsTab {
+        top: 60px;
+        left: 10px;
+      }
+
+      #experienceTab {
+        top: 120px;
+        left: 10px;
+      }
+
+      #educationTab {
+        top: 60px;
+        right: 10px;
+      }
+
+      #contactTab {
+        top: 120px;
+        right: 10px;
+      }
+
+      #projectTab {
+        top: calc(50% + 80px);
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+
+      /* Modal Adjustments */
+      .modal {
+        width: 95vw;
+        max-width: none;
+        padding: 20px;
+        margin: 10px;
+      }
+
+      .modal-content {
+        padding: 15px;
+        max-height: 70vh;
+      }
+
+      .typing-content {
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      .typing-content h2 {
+        font-size: 1.1rem;
+        margin: 15px 0 10px 0;
+      }
+
+      .typing-content li {
+        margin: 6px 0;
+        padding-left: 15px;
+      }
+
+      /* Email Link Adjustments */
+      .email-link {
+        width: 40px;
+        height: 40px;
+        bottom: 15px;
+        left: 15px;
+        font-size: 1.2rem;
+      }
+
+      /* Mute Button Adjustments */
+      #muteBtn {
+        bottom: 15px;
+        right: 15px;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+
+      /* Grid Background Adjustments */
+      .grid-bg {
+        background-size: 30px 30px;
+      }
+    }
+
+    /* Small Mobile Devices */
+    @media (max-width: 480px) {
+      #hud {
+        transform: translate(-50%, -50%) scale(0.8);
+        font-size: 1rem;
+      }
+
+      #hud > div {
+        padding: 15px;
+      }
+
+      .modal-tab {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+
+      #skillsTab {
+        top: 50px;
+      }
+
+      #experienceTab {
+        top: 100px;
+      }
+
+      #educationTab {
+        top: 50px;
+      }
+
+      #contactTab {
+        top: 100px;
+      }
+
+      #projectTab {
+        top: calc(50% + 70px);
+        padding: 8px 15px;
+        font-size: 0.85rem;
+      }
+
+      .modal {
+        padding: 15px;
+      }
+
+      .modal-content {
+        padding: 10px;
+      }
+
+      .typing-content {
+        font-size: 0.9rem;
+      }
+
+      .typing-content h2 {
+        font-size: 1rem;
+      }
+
+      .email-link {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+      }
+
+      #muteBtn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Landscape Mode */
+    @media (max-height: 500px) and (orientation: landscape) {
+      #hud {
+        transform: translate(-50%, -50%) scale(0.7);
+      }
+
+      .modal {
+        max-height: 90vh;
+      }
+
+      .modal-content {
+        max-height: 80vh;
+      }
+
+      #projectTab {
+        top: calc(50% + 60px);
+      }
+    }
+
+    /* Prevent Text Size Adjustment */
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) {
+      .modal-tab:hover {
+        transform: none;
+      }
+
+      .modal-tab:active {
+        background: rgba(0,255,255,0.1);
+        transform: scale(0.98);
+      }
+
+      .modal-close:hover {
+        transform: none;
+      }
+
+      .modal-close:active {
+        background: rgba(0,255,255,0.1);
+        transform: scale(0.95);
+      }
+    }
   </style>
 </head>
 <body>
@@ -565,18 +772,34 @@
     // Initialize particles with enhanced configuration
     particlesJS('particles-js', {
       particles: {
-        number: { value: 100, density: { enable: true, value_area: 800 } },
+        number: { 
+          value: 80,
+          density: { 
+            enable: true, 
+            value_area: 800 
+          }
+        },
         color: { value: '#00ffff' },
         shape: { type: 'circle' },
         opacity: {
           value: 0.5,
           random: true,
-          animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+          animation: { 
+            enable: true, 
+            speed: 1, 
+            minimumValue: 0.1, 
+            sync: false 
+          }
         },
         size: {
           value: 3,
           random: true,
-          animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+          animation: { 
+            enable: true, 
+            speed: 2, 
+            minimumValue: 0.1, 
+            sync: false 
+          }
         },
         line_linked: {
           enable: true,
@@ -591,24 +814,53 @@
           direction: 'none',
           random: true,
           straight: false,
-          outMode: 'out',
-          bounce: false
+          outMode: 'bounce',
+          bounce: true,
+          attract: {
+            enable: true,
+            rotateX: 600,
+            rotateY: 1200
+          }
         }
       },
       interactivity: {
         detectsOn: 'canvas',
         events: {
-          onHover: { enable: true, mode: 'grab' },
-          onClick: { enable: true, mode: 'push' },
+          onHover: { 
+            enable: true, 
+            mode: 'grab' 
+          },
+          onClick: { 
+            enable: true, 
+            mode: 'push' 
+          },
           resize: true
         },
         modes: {
-          grab: { distance: 140, line_linked: { opacity: 0.5 } },
-          push: { particles_nb: 4 }
+          grab: { 
+            distance: 140, 
+            line_linked: { 
+              opacity: 0.5 
+            } 
+          },
+          push: { 
+            particles_nb: 4 
+          }
         }
       },
       retina_detect: true
     });
+
+    // Add resize handler to maintain particles throughout the page
+    window.addEventListener('resize', function() {
+      const particlesContainer = document.getElementById('particles-js');
+      if (particlesContainer) {
+        particlesContainer.style.height = window.innerHeight + 'px';
+      }
+    });
+
+    // Initial height set
+    document.getElementById('particles-js').style.height = window.innerHeight + 'px';
 
     // Modal Functionality
     function typeText(text, target) {
