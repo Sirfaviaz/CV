@@ -5,204 +5,553 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mohammed Favaz</title>
   <link rel="icon" type="image/png" href="favaz-icon.png?v=2">
-
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --neon-blue: #00ffff;
+      --neon-purple: #9d00ff;
+      --neon-pink: #ff00ff;
+      --glow-intensity: 0.8;
+      --cyber-gradient: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       width: 100vw;
       height: 100vh;
-      background: black;
+      background: #000;
       overflow: hidden;
       font-family: 'Orbitron', sans-serif;
+      color: var(--neon-blue);
     }
+
+    /* Enhanced HUD */
     #hud {
       position: absolute;
-      top: 20px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      color: #00ffff;
+      transform: translate(-50%, -50%) scale(1.1);
+      color: var(--neon-blue);
       text-align: center;
-      text-shadow: 0 0 10px #0ff;
+      text-shadow: 0 0 10px var(--neon-blue);
       font-size: 1.5rem;
       z-index: 10;
+      pointer-events: none;
+      animation: flicker 1.5s infinite alternate;
     }
+
+    #hud > div {
+      padding: 30px;
+      background: rgba(0,255,255,0.05);
+      border: 1px solid var(--neon-blue);
+      border-radius: 15px;
+      box-shadow: 
+        0 0 20px var(--neon-blue),
+        0 0 40px rgba(0,255,255,0.2),
+        inset 0 0 20px rgba(0,255,255,0.1);
+      text-shadow: 0 0 10px var(--neon-blue);
+      backdrop-filter: blur(10px);
+      transform: perspective(1000px) rotateX(5deg);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hud > div::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(0,255,255,0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    /* Enhanced Modal Tab */
+    .modal-tab {
+      position: absolute;
+      padding: 15px 30px;
+      background: rgba(0,255,255,0.05);
+      border: 1px solid var(--neon-blue);
+      border-radius: 12px;
+      color: var(--neon-blue);
+      font-size: 1.1rem;
+      font-family: Orbitron, sans-serif;
+      cursor: pointer;
+      z-index: 11;
+      text-shadow: 0 0 5px var(--neon-blue);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 20px rgba(0,255,255,0.1);
+      overflow: hidden;
+    }
+
+    .modal-tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--cyber-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .modal-tab:hover {
+      background: transparent;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 
+        0 0 30px var(--neon-blue),
+        0 0 60px rgba(0,255,255,0.2);
+      border-color: transparent;
+    }
+
+    .modal-tab:hover::before {
+      opacity: 0.1;
+    }
+
+    .modal-tab::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(0,255,255,0.2),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    /* Enhanced Modal */
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      width: 80vw;
+      max-width: 600px;
+      max-height: 80vh;
+      padding: 30px;
+      background: rgba(0,255,255,0.05);
+      border: 1px solid var(--neon-blue);
+      border-radius: 15px;
+      display: none;
+      color: var(--neon-blue);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px var(--neon-blue);
+      box-shadow: 
+        0 0 30px var(--neon-blue),
+        0 0 60px rgba(0,255,255,0.2),
+        inset 0 0 30px rgba(0,255,255,0.1);
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--cyber-gradient);
+      animation: scanline 2s linear infinite;
+    }
+
+    .modal::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(0,255,255,0.05),
+        transparent
+      );
+      animation: shine 3s infinite;
+    }
+
+    /* Enhanced Modal Content */
+    .modal-content {
+      overflow-y: auto;
+      max-height: 60vh;
+      width: 100%;
+      padding: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--neon-blue) rgba(0,255,255,0.1);
+      position: relative;
+    }
+
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background: var(--neon-blue);
+      border-radius: 4px;
+      box-shadow: 0 0 5px var(--neon-blue);
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+      background: rgba(0,255,255,0.1);
+      border-radius: 4px;
+    }
+
+    /* Enhanced Typing Content */
+    .typing-content {
+      white-space: pre-wrap;
+      padding: 10px 0;
+      line-height: 1.8;
+      position: relative;
+      text-shadow: 0 0 5px var(--neon-blue);
+      font-size: 1.1rem;
+    }
+
+    .typing-content h2 {
+      color: var(--neon-purple);
+      margin: 20px 0 10px 0;
+      font-size: 1.4rem;
+      text-shadow: 0 0 10px var(--neon-purple);
+    }
+
+    .typing-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .typing-content ul {
+      list-style: none;
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+
+    .typing-content li {
+      position: relative;
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+
+    .typing-content li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--neon-blue);
+      text-shadow: 0 0 5px var(--neon-blue);
+    }
+
+    .typing-content p {
+      margin: 10px 0;
+    }
+
+    /* Enhanced Grid Background */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 0;
+      opacity: 0.3;
+      animation: grid-move 20s linear infinite;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    @keyframes grid-move {
+      0% { transform: translateY(0) rotateX(60deg); }
+      100% { transform: translateY(50px) rotateX(60deg); }
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    @keyframes scanline {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.9; filter: drop-shadow(0 0 2px var(--neon-blue)); }
+      25% { opacity: 1; filter: drop-shadow(0 0 6px var(--neon-blue)); }
+      50% { opacity: 0.85; filter: drop-shadow(0 0 3px var(--neon-blue)); }
+      75% { opacity: 1; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+      100% { opacity: 0.9; filter: drop-shadow(0 0 4px var(--neon-blue)); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Tab Positions */
+    #skillsTab {
+      top: 80px;
+      left: 20px;
+    }
+
+    #experienceTab {
+      top: 150px;
+      left: 20px;
+    }
+
+    #educationTab {
+      top: 80px;
+      right: 20px;
+    }
+
+    #contactTab {
+      top: 150px;
+      right: 20px;
+    }
+
+    /* Email Link */
+    .email-link {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,255,255,0.05);
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px rgba(0,255,255,0.1);
+    }
+
+    .email-link:hover {
+      background: rgba(0,255,255,0.1);
+      transform: translateY(-2px) scale(1.1);
+      box-shadow: 
+        0 0 30px var(--neon-blue),
+        0 0 60px rgba(0,255,255,0.2);
+    }
+
+    /* Mute Button */
     #muteBtn {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: rgba(0,255,255,0.1);
-      border: 1px solid #0ff;
-      color: #0ff;
-      padding: 10px;
-      border-radius: 8px;
+      background: rgba(0,255,255,0.05);
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+      padding: 12px 25px;
+      border-radius: 12px;
       backdrop-filter: blur(5px);
       cursor: pointer;
       font-family: inherit;
       font-size: 14px;
       z-index: 10;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 20px rgba(0,255,255,0.1);
     }
-    @keyframes flicker {
-    0% { opacity: 0.9; filter: drop-shadow(0 0 2px #0ff); }
-    25% { opacity: 1; filter: drop-shadow(0 0 6px #0ff); }
-    50% { opacity: 0.85; filter: drop-shadow(0 0 3px #0ff); }
-    75% { opacity: 1; filter: drop-shadow(0 0 5px #0ff); }
-    100% { opacity: 0.9; filter: drop-shadow(0 0 4px #0ff); }
-  }
-.holo-glow {
-      position: relative;
+
+    #muteBtn:hover {
+      background: rgba(0,255,255,0.1);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 0 30px var(--neon-blue),
+        0 0 60px rgba(0,255,255,0.2);
     }
-    .holo-glow::after {
+
+    /* Enhanced Modal Close Button */
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0,255,255,0.05);
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+      font-size: 1.2rem;
+      cursor: pointer;
+      text-shadow: 0 0 5px var(--neon-blue);
+      z-index: 2;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 10px rgba(0,255,255,0.1);
+      overflow: hidden;
+    }
+
+    .modal-close::before {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0, 255, 255, 0.07),
-        rgba(0, 255, 255, 0.07) 1px,
-        transparent 1px,
-        transparent 4px
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--cyber-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .modal-close:hover {
+      background: transparent;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 
+        0 0 20px var(--neon-blue),
+        0 0 40px rgba(0,255,255,0.2);
+      border-color: transparent;
+    }
+
+    .modal-close:hover::before {
+      opacity: 0.1;
+    }
+
+    .modal-close::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(0,255,255,0.2),
+        transparent
       );
-      pointer-events: none;
-      animation: scan 4s linear infinite;
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    .modal-close span {
+      position: relative;
       z-index: 1;
-    }
-    @keyframes scan {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(100%); }
-    }
-#experienceModal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80vw;
-      max-width: 500px;
-      height: auto;
-      padding: 30px;
-      background: rgba(0, 255, 255, 0.05);
-      border: 1px solid #00ffff;
-      border-radius: 12px;
-      display: none;
-      color: #00ffff;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      text-shadow: 0 0 10px #00ffff;
-      box-shadow: 0 0 30px #00ffff40;
-      z-index: 20;
-      backdrop-filter: blur(6px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #experienceTab {
-  position: absolute;
-  top: 150px;
-  left: 20px;
-  padding: 14px 28px;
-  background: rgba(0, 255, 255, 0.1);
-  border: 1px solid #0ff;
-  border-radius: 10px;
-  color: #0ff;
-  font-size: 1.1rem;
-  font-family: Orbitron, sans-serif;
-  cursor: pointer;
-  z-index: 11;
-  text-shadow: 0 0 5px #0ff;
-}
-    #typingExp {
-      white-space: pre-wrap;
-    }
-#educationModal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80vw;
-      max-width: 500px;
-      height: auto;
-      padding: 30px;
-      background: rgba(0, 255, 255, 0.05);
-      border: 1px solid #00ffff;
-      border-radius: 12px;
-      display: none;
-      color: #00ffff;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      text-shadow: 0 0 10px #00ffff;
-      box-shadow: 0 0 30px #00ffff40;
-      z-index: 20;
-      backdrop-filter: blur(6px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #educationTab {
-  position: absolute;
-  top: 80px;
-  right: 20px;
-  padding: 14px 28px;
-  background: rgba(0, 255, 255, 0.1);
-  border: 1px solid #0ff;
-  border-radius: 10px;
-  color: #0ff;
-  font-size: 1.1rem;
-  font-family: Orbitron, sans-serif;
-  cursor: pointer;
-  z-index: 11;
-  text-shadow: 0 0 5px #0ff;
-}
-    #typingEdu {
-      white-space: pre-wrap;
-    }
-#contactModal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80vw;
-      max-width: 500px;
-      height: auto;
-      padding: 30px;
-      background: rgba(0, 255, 255, 0.05);
-      border: 1px solid #00ffff;
-      border-radius: 12px;
-      display: none;
-      color: #00ffff;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      text-shadow: 0 0 10px #00ffff;
-      box-shadow: 0 0 30px #00ffff40;
-      z-index: 20;
-      backdrop-filter: blur(6px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #contactTab {
-  position: absolute;
-  top: 150px;
-  right: 20px;
-  padding: 14px 28px;
-  background: rgba(0, 255, 255, 0.1);
-  border: 1px solid #0ff;
-  border-radius: 10px;
-  color: #0ff;
-  font-size: 1.1rem;
-  font-family: Orbitron, sans-serif;
-  cursor: pointer;
-  z-index: 11;
-  text-shadow: 0 0 5px #0ff;
-}
-    #typingContact {
-      white-space: pre-wrap;
+      font-weight: bold;
+      transform: scale(1.2);
     }
 
+    /* Modal Size Adjustments */
+    .modal {
+      width: 90vw;
+      max-width: 800px;
+      max-height: 85vh;
+      padding: 40px;
+    }
 
-    
-</style>
+    @media (max-width: 768px) {
+      .modal {
+        width: 95vw;
+        padding: 30px 20px;
+      }
+      
+      .typing-content {
+        font-size: 1rem;
+      }
+      
+      .typing-content h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div id="particles-js"></div>
+  
+  <a href="mailto:favazmohammed.vp@gmail.com" class="email-link">📧</a>
+
+  <div id="skillsTab" class="modal-tab">💡 Skills</div>
+  <div id="experienceTab" class="modal-tab">📘 Experience</div>
+  <div id="educationTab" class="modal-tab">🎓 Education</div>
+  <div id="contactTab" class="modal-tab">📞 Contact and Info</div>
+  
+  <div id="skillsModal" class="modal">
+    <button class="modal-close" id="closeModal"><span>×</span></button>
+    <div class="modal-content">
+      <div id="typing" class="typing-content"></div>
+    </div>
+  </div>
+  
+  <div id="experienceModal" class="modal">
+    <button class="modal-close" id="closeExp"><span>×</span></button>
+    <div class="modal-content">
+      <div id="typingExp" class="typing-content"></div>
+    </div>
+  </div>
+  
+  <div id="educationModal" class="modal">
+    <button class="modal-close" id="closeEdu"><span>×</span></button>
+    <div class="modal-content">
+      <div id="typingEdu" class="typing-content"></div>
+    </div>
+  </div>
+  
+  <div id="contactModal" class="modal">
+    <button class="modal-close" id="closeContact"><span>×</span></button>
+    <div class="modal-content">
+      <div id="typingContact" class="typing-content"></div>
+    </div>
+  </div>
+  
+  <div id="hud">
+    <div>
+      Mohammed Favaz V P<br/>Admin | Full-Stack Developer
+    </div>
+  </div>
+  
+  <div id="projectTab" class="modal-tab" style="top: calc(50% + 100px); left: 50%; transform: translateX(-50%);">🚀 Projects</div>
+  
+  <div id="projectModal" class="modal">
+    <button class="modal-close" id="closeProject"><span>×</span></button>
+    <div class="modal-content">
+      <div id="typingProject" class="typing-content"></div>
+    </div>
+  </div>
+  
+  <button id="muteBtn">🔊 Mute</button>
+  <audio id="ambientSound" autoplay loop>
+    <source src="https://cdn.freesound.org/previews/368/368843_4939433-lq.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script type="importmap">
     {
       "imports": {
@@ -211,193 +560,195 @@
       }
     }
   </script>
-<style>
-    #skillsModal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80vw;
-      max-width: 500px;
-      height: auto;
-      padding: 30px;
-      background: rgba(0, 255, 255, 0.05);
-      border: 1px solid #00ffff;
-      border-radius: 12px;
-      display: none;
-      color: #00ffff;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      text-shadow: 0 0 10px #00ffff;
-      box-shadow: 0 0 30px #00ffff40;
-      z-index: 20;
-      backdrop-filter: blur(6px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #typing {
-      white-space: pre-wrap;
-    }
-    #skillsTab {
-  position: absolute;
-  top: 80px;
-  left: 20px;
-  padding: 14px 28px;
-  background: rgba(0, 255, 255, 0.1);
-  border: 1px solid #0ff;
-  border-radius: 10px;
-  color: #0ff;
-  font-size: 1.1rem;
-  font-family: Orbitron, sans-serif;
-  cursor: pointer;
-  z-index: 11;
-  text-shadow: 0 0 5px #0ff;
-}
-
-
-  </style>
-</head>
-<body>
-  <div id="skillsTab">💡 Skills</div>
-  <div id="experienceTab">📘 Experience</div>
-  <div id="educationTab">🎓 Education</div>
-  <div id="contactTab">📞 Contact</div>
-  <div id="experienceModal" class="holo-glow">
-    <button id="closeExp" style="position:absolute;top:45%;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button>
-    <div class="modal-content">
-      <div id="typingExp"></div>
-    </div>
-  </div>
-  <div id="skillsModal" class="holo-glow"><button id="closeModal" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button><div id="typing"></div></div>
-  <div id="educationModal" class="holo-glow">
-    <button id="closeEdu" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button>
-    <div id="typingEdu"></div>
-  </div></div>
-  <div id="contactModal" class="holo-glow">
-    <button id="closeContact" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#0ff;font-size:1.2rem;cursor:pointer;text-shadow:0 0 5px #0ff;">✖</button>
-    <div id="typingContact"></div>
-  </div>
-  <div id="hud" class="holo-glow" style="top: 50%; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; animation: flicker 1.5s infinite alternate;">
-    <div style="padding: 20px; background: rgba(0,255,255,0.05); border: 1px solid #0ff; border-radius: 10px; box-shadow: 0 0 20px #0ff; text-shadow: 0 0 10px #0ff;">
-      Mohammed Favaz V P<br/>Admin | Full-Stack Developer
-    </div>
-  </div>
-  <button id="muteBtn">🔊 Mute</button>
-  <audio id="ambientSound" autoplay loop>
-    <source src="https://cdn.freesound.org/previews/368/368843_4939433-lq.mp3" type="audio/mpeg">
-  </audio>
-
-  <style>
-    .modal-content {
-      overflow-y: auto;
-      max-height: 60vh;
-      padding-right: 10px; /* optional for spacing */
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    .modal-content::-webkit-scrollbar {
-      width: 0px;
-      background: transparent;
-    }
-    
-  </style>
 
   <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
-  
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
-    scene.fog = new THREE.Fog(0x000000, 5, 15);
-  
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 6;
-  
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-  
-    const light = new THREE.PointLight(0x00ffff, 2, 100);
-    light.position.set(10, 10, 10);
-    scene.add(light);
-    scene.add(new THREE.AmbientLight(0x00ffff, 0.4));
-  
-    const ringGeo = new THREE.RingGeometry(1.5, 1.6, 64);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = -2;
-    scene.add(ring);
-  
-    const ringGlowMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, opacity: 0.3, transparent: true });
-    const innerGlow = new THREE.Mesh(new THREE.RingGeometry(1.3, 1.8, 64), ringGlowMat);
-    innerGlow.rotation.x = Math.PI / 2;
-    innerGlow.position.y = -2;
-    scene.add(innerGlow);
-  
-    const pointsGeo = new THREE.BufferGeometry();
-    const count = 500;
-    const positions = new Float32Array(count * 3);
-    for (let i = 0; i < count * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 20;
-    }
-    pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const pointsMat = new THREE.PointsMaterial({ color: 0x00ffff, size: 0.05 });
-    const points = new THREE.Points(pointsGeo, pointsMat);
-    scene.add(points);
-  
-    const orbiters = [];
-    const skillLabels = ['JS', 'Python', 'Django', 'React', 'Tailwind'];
-    for (let i = 0; i < 5; i++) {
-      const textCanvas = document.createElement('canvas');
-      textCanvas.width = 128;
-      textCanvas.height = 64;
-      const ctx = textCanvas.getContext('2d');
-      ctx.fillStyle = '#00ffff';
-      ctx.font = '18px Orbitron';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.shadowColor = '#00ffff';
-      ctx.shadowBlur = 6;
-      ctx.fillText(skillLabels[i], 64, 32);
-  
-      const textTexture = new THREE.CanvasTexture(textCanvas);
-      const planeGeo = new THREE.PlaneGeometry(1, 0.4);
-      const planeMat = new THREE.MeshBasicMaterial({ map: textTexture, transparent: true });
-      const orb = new THREE.Mesh(planeGeo, planeMat);
-      orb.userData = {
-        radius: 2.2,
-        angle: i * (Math.PI * 2 / 5),
-        speed: 0.01 + i * 0.001
-      };
-      orbiters.push(orb);
-      scene.add(orb);
-    }
-  
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = false;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.5;
-  
-    function animate() {
-      requestAnimationFrame(animate);
-      orbiters.forEach((orb) => {
-        orb.userData.angle += orb.userData.speed;
-        orb.position.x = Math.cos(orb.userData.angle) * orb.userData.radius;
-        orb.position.z = Math.sin(orb.userData.angle) * orb.userData.radius;
-      });
-      points.rotation.y += 0.0015;
-      renderer.render(scene, camera);
-    }
-    animate();
-  
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+    // Initialize particles with enhanced configuration
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 100, density: { enable: true, value_area: 800 } },
+        color: { value: '#00ffff' },
+        shape: { type: 'circle' },
+        opacity: {
+          value: 0.5,
+          random: true,
+          animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+        },
+        size: {
+          value: 3,
+          random: true,
+          animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+        },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: '#00ffff',
+          opacity: 0.2,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 1,
+          direction: 'none',
+          random: true,
+          straight: false,
+          outMode: 'out',
+          bounce: false
+        }
+      },
+      interactivity: {
+        detectsOn: 'canvas',
+        events: {
+          onHover: { enable: true, mode: 'grab' },
+          onClick: { enable: true, mode: 'push' },
+          resize: true
+        },
+        modes: {
+          grab: { distance: 140, line_linked: { opacity: 0.5 } },
+          push: { particles_nb: 4 }
+        }
+      },
+      retina_detect: true
     });
-  
+
+    // Modal Functionality
+    function typeText(text, target) {
+      let idx = 0;
+      target.textContent = '';
+      const container = target.parentElement;
+      container.scrollTop = 0;
+      const interval = setInterval(() => {
+        target.textContent += text[idx++];
+        container.scrollTop = container.scrollHeight;
+        if (idx >= text.length) clearInterval(interval);
+      }, 20);
+    }
+
+    const modals = [
+      { modal: document.getElementById('skillsModal'), closeBtn: document.getElementById('closeModal') },
+      { modal: document.getElementById('experienceModal'), closeBtn: document.getElementById('closeExp') },
+      { modal: document.getElementById('educationModal'), closeBtn: document.getElementById('closeEdu') },
+      { modal: document.getElementById('contactModal'), closeBtn: document.getElementById('closeContact') },
+      { modal: document.getElementById('projectModal'), closeBtn: document.getElementById('closeProject') }
+    ];
+
+    function showModal(modal, text, targetId) {
+      closeAllModals();
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+      });
+      typeText(text, document.getElementById(targetId));
+    }
+
+    function closeAllModals() {
+      modals.forEach(({ modal }) => {
+        if (modal.classList.contains('active')) {
+          modal.classList.remove('active');
+          setTimeout(() => {
+            modal.style.display = 'none';
+          }, 300);
+        }
+      });
+    }
+
+    modals.forEach(({ modal, closeBtn }) => {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        modal.classList.remove('active');
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+          setTimeout(() => {
+            modal.style.display = 'none';
+          }, 300);
+        }
+      });
+
+      // Prevent clicks inside modal content from closing the modal
+      modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeAllModals();
+      }
+    });
+
+    // Tab Click Handlers
+    document.getElementById('skillsTab').onclick = () =>
+      showModal(document.getElementById('skillsModal'), `Skills:\n- Office Administration\n- Procurement & Vendor Management\n- HR & Payroll Assistance\n- Financial & Accounts Support\n- ERPNext (Accounts, Stock)\n- Product Listing Automation\n- Basic Hardware & Networking\n- Python, Django, HTML, CSS, JavaScript\n- React, Tailwind CSS\n- Firebase, Git & GitHub\n- Microsoft Office Suite`, 'typing');
+
+    document.getElementById('experienceTab').onclick = () =>
+      showModal(document.getElementById('experienceModal'), `Experience:\n\nSales & Online Operations Manager\nConfidential Electronics Supplier – Qatar (Dec 2024 – Present)\n- Managed online sales via Snoonu & Rafeeq\n- Handled listings, pricing, orders & logistics\n- Implemented ERPNext for stock/accounts\n- Automated product listings & backups\n\nSales Coordinator\nMarhaba Traders – India (Mar 2020 – Nov 2024)\n- Processed orders, supplier coordination\n- Financial documentation & customer support\n\nAdministrator\nMarconi Metal Industries LLC – Dubai (Jan 2017 – Dec 2019)\n- Managed admin tasks & HR coordination\n- Implemented centralized data backup\n- Handled IT & hardware troubleshooting\n\nManagement Trainee\nMarhaba Traders – India (Mar 2015 – Jun 2016)\n- Sales & fund collection records\n- Weekly/monthly reporting\n\nSales & Marketing Executive\nMarhaba Traders – India (May 2013 – Jan 2015)\n- Client meetings & trend reporting`, 'typingExp');
+
+    document.getElementById('educationTab').onclick = () =>
+      showModal(document.getElementById('educationModal'), `Education:\n- Bachelor of Business Administration (BBA)\n  Bharathiar University, Coimbatore (2012–2016)\n- Higher Secondary (CBSE – 2011–2012)\n- Secondary School (CBSE – 2001–2011)\n\nCertifications:\n- MS Office – G-TEC, Kerala\n- Web Development (Self-learned)\n- ERPNext Integration\n- Hardware & Networking (Basic)`, 'typingEdu');
+
+    document.getElementById('contactTab').onclick = () =>
+      showModal(document.getElementById('contactModal'), `Contact:\n- Name: Mohammed Favaz VP\n- Email: favazmohammed.vp@gmail.com\n- Phone: +974 7168 1612\n- Location: Qatar\n- Portfolio: https://cv.fvzmhd.pro\n- Nationality: Indian\n- Date of Birth: 25-01-1994\n- Marital Status: Single\n- Driving License: Valid (Qatar)`, 'typingContact');
+
+    document.getElementById('projectTab').onclick = () =>
+      showModal(document.getElementById('projectModal'), `Projects
+
+1. Enterprise E-Commerce Platform
+• Full-stack development with Django & PostgreSQL
+• Implemented secure Razorpay payment gateway integration
+• Real-time inventory management system
+• Advanced search functionality with Elasticsearch
+• RESTful API architecture using Django REST Framework
+• Automated order processing with PDF parsing
+• ERPNext integration for real-time stock verification
+• Google Sheets API integration for dynamic pricing
+• Redis caching for improved performance
+• Celery for asynchronous task processing
+• Custom admin dashboard with analytics
+• Automated inventory synchronization
+• Real-time order tracking system
+• Secure user authentication & authorization
+• Responsive frontend with modern UI/UX
+
+2. Comprehensive HR Management System
+• Full-stack application using Django DRF & React
+• End-to-end recruitment pipeline automation
+• AI-powered CV parsing and candidate screening
+• Interview scheduling with calendar integration
+• Digital onboarding workflow automation
+• Real-time attendance tracking with geofencing
+• Automated payroll processing system
+• Live chat functionality using WebSocket
+• Redis for real-time data synchronization
+• Celery for background task processing
+• Advanced reporting and analytics dashboard
+• Employee performance tracking
+• Document management system
+• Leave management automation
+• Real-time notifications system
+
+3. Automated Order Processing System
+• Intelligent PDF parsing for order extraction
+• Real-time stock verification via ERPNext API
+• Automated price calculations and margin analysis
+• Dynamic Google Sheets integration for inventory
+• Custom webhook system for order status updates
+• Automated email notifications and alerts
+• Data validation and error handling
+• Performance optimization with Redis caching
+• Comprehensive logging and monitoring
+• Real-time inventory updates
+• Automated price adjustments
+• Order tracking and status updates
+• Custom reporting system
+• Error recovery mechanisms
+• Data backup and recovery`, 'typingProject');
+
+    // Sound Control
     const musicToggle = document.getElementById('muteBtn');
     const ambient = document.getElementById('ambientSound');
     let isMuted = false;
@@ -406,73 +757,6 @@
       ambient.muted = isMuted;
       musicToggle.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
     });
-  
-    function typeText(text, target) {
-      let idx = 0;
-      target.textContent = '';
-      target.scrollTop = 0;
-      const interval = setInterval(() => {
-        target.textContent += text[idx++];
-        target.scrollTop = target.scrollHeight;
-        if (idx >= text.length) clearInterval(interval);
-      }, 20);
-    }
-  
-    const modals = [
-      { modal: document.getElementById('skillsModal'), closeBtn: document.getElementById('closeModal') },
-      { modal: document.getElementById('experienceModal'), closeBtn: document.getElementById('closeExp') },
-      { modal: document.getElementById('educationModal'), closeBtn: document.getElementById('closeEdu') },
-      { modal: document.getElementById('contactModal'), closeBtn: document.getElementById('closeContact') },
-    ];
-  
-    modals.forEach(({ modal, closeBtn }) => {
-      modal.style.overflowY = 'auto';
-      modal.style.maxHeight = '80vh';
-      modal.style.top = '50%';
-      modal.style.left = '50%';
-      modal.style.transform = 'translate(-50%, -50%)';
-      modal.style.position = 'fixed';
-      modal.style.scrollBehavior = 'smooth';
-      
-      closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-      });
-      window.addEventListener('click', (event) => {
-        if (event.target === modal) modal.style.display = 'none';
-      });
-    });
-  
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        modals.forEach(({ modal }) => (modal.style.display = 'none'));
-      }
-    });
-  
-    function closeAllModals() {
-      modals.forEach(({ modal }) => (modal.style.display = 'none'));
-    }
-  
-    function showModal(modal, text, targetId) {
-      closeAllModals();
-      modal.style.display = 'flex';
-      typeText(text, document.getElementById(targetId));
-    }
-  
-    document.getElementById('skillsTab').onclick = () =>
-      showModal(document.getElementById('skillsModal'), `Skills:\n- Office Administration\n- Procurement & Vendor Management\n- HR & Payroll Assistance\n- Financial & Accounts Support\n- ERPNext (Accounts, Stock)\n- Product Listing Automation\n- Basic Hardware & Networking\n- Python, Django, HTML, CSS, JavaScript\n- React, Tailwind CSS\n- Firebase, Git & GitHub\n- Microsoft Office Suite`, 'typing');
-  
-    document.getElementById('experienceTab').onclick = () =>
-      showModal(document.getElementById('experienceModal'), `Experience:\n\nSales & Online Operations Manager\nConfidential Electronics Supplier – Qatar (Dec 2024 – Present)\n- Managed online sales via Snoonu & Rafeeq\n- Handled listings, pricing, orders & logistics\n- Implemented ERPNext for stock/accounts\n- Automated product listings & backups\n\nSales Coordinator\nMarhaba Traders – India (Mar 2020 – Nov 2024)\n- Processed orders, supplier coordination\n- Financial documentation & customer support\n\nAdministrator\nMarconi Metal Industries LLC – Dubai (Jan 2017 – Dec 2019)\n- Managed admin tasks & HR coordination\n- Implemented centralized data backup\n- Handled IT & hardware troubleshooting\n\nManagement Trainee\nMarhaba Traders – India (Mar 2015 – Jun 2016)\n- Sales & fund collection records\n- Weekly/monthly reporting\n\nSales & Marketing Executive\nMarhaba Traders – India (May 2013 – Jan 2015)\n- Client meetings & trend reporting`, 'typingExp');
-  
-    document.getElementById('educationTab').onclick = () =>
-      showModal(document.getElementById('educationModal'), `Education:\n- Bachelor of Business Administration (BBA)\n  Bharathiar University, Coimbatore (2012–2016)\n- Higher Secondary (CBSE – 2011–2012)\n- Secondary School (CBSE – 2001–2011)\n\nCertifications:\n- MS Office – G-TEC, Kerala\n- Web Development (Self-learned)\n- ERPNext Integration\n- Hardware & Networking (Basic)`, 'typingEdu');
-  
-    document.getElementById('contactTab').onclick = () =>
-      showModal(document.getElementById('contactModal'), `Contact:\n- Name: Mohammed Favaz VP\n- Email: favazmohammed.vp@gmail.com\n- Phone: +974 7168 1612\n- Location: Qatar\n- Portfolio: https://cv.fvzmhd.pro\n- Nationality: Indian\n- Date of Birth: 25-01-1994\n- Marital Status: Single\n- Driving License: Valid (Qatar)`, 'typingContact');
   </script>
-  
-  
-      
-  
 </body>
 </html>
